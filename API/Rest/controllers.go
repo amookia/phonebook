@@ -65,9 +65,15 @@ func Login(c *gin.Context){
 }
 
 func AuthRequired(c *gin.Context){
+	var user User
 	token := c.GetHeader("Authorization")
 	if len(token) != 0 {
 		verify := Config.CheckJWT(token)
+		email := Config.ClaimJWT(token)
+		Config.DB.Table("users").Where("email = ?",email).Scan(&user)
+		if user.ID == 0{
+			c.AbortWithStatusJSON(400,gin.H{"error":"user not found!"})
+		}
 		if verify {
 			c.Next()
 		}else {
