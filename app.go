@@ -14,7 +14,8 @@ func main(){
 	Rest.RegisterRest(r)
 
 	//Migrations
-	Config.DB.AutoMigrate(&Rest.User{}) // Migrate User Table
+	Config.DB.AutoMigrate(&Rest.User{})    // Migrate User Table
+	Config.DB.AutoMigrate(&Rest.Contact{}) // Migrate Contact Table
 
 	r.Run(":8000")
 }

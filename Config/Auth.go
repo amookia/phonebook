@@ -37,3 +37,23 @@ func CheckJWT(mytoken string) (bool){
 		return false
 	}
 }
+
+func ClaimJWT(mytoken string) string{
+	hmacSampleSecret := []byte(SECRET)
+	jtoken,_ := jwt.Parse(mytoken, func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return hmacSampleSecret, nil
+	})
+
+	if claim, ok := jtoken.Claims.(jwt.MapClaims); ok && jtoken.Valid {
+		user := claim["user"]
+		return user.(string)
+	} else {
+		return ""
+	}
+}

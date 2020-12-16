@@ -1,6 +1,7 @@
 package Rest
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"phonebook/Config"
 )
@@ -79,4 +80,37 @@ func AuthRequired(c *gin.Context){
 		})
 	}
 
+}
+
+func ContactsAdd(c *gin.Context){
+	var ContactForm AddContactForm
+	var contact 	Contact
+	token := c.GetHeader("Authorization")
+	email := Config.ClaimJWT(token)
+	fmt.Println(email)
+	form := c.ShouldBindJSON(&ContactForm)
+	lenofnums := len(ContactForm.Phone_numbers)
+	if form != nil || lenofnums == 0 {
+		c.JSON(400,gin.H{
+			"error":"Check your input!",
+		})
+	}else{
+		var str string
+		for _,nums := range ContactForm.Phone_numbers{
+			fmt.Println(nums)
+			str += nums + ","
+		}
+		Config.DB.Table("users").Select("id as user_id").Where("email = ?",email).Scan(&contact)
+		contact.Name = ContactForm.Name
+		contact.Phone_number = str
+		contact.Description = ContactForm.Description
+		res := Config.DB.Table("contacts").Create(&contact).Error
+		if res != nil {
+			c.JSON(500,gin.H{
+				"error":"IDK",
+			})
+			return
+		}
+		c.JSON(200,gin.H{"status":"Success"})
+	}
 }
