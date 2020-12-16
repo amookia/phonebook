@@ -20,7 +20,7 @@ var DBconfig struct{
 
 func ConnectToDB(){
 	//Configs
-	DBconfig.Host = "127.0.0.1:3306" //DB Host
+	DBconfig.Host = "mysql:3306" //DB Host
 	DBconfig.User = "root"			 //DB USERNAME
 	DBconfig.Password = "password"   //DB PASSWORD
 	DBconfig.Database = "taskapi"	 //DB NAME
