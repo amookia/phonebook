@@ -139,3 +139,38 @@ func ContactList(c *gin.Context){
 	fmt.Println(resp)
 	c.JSON(200,resp)
 }
+
+func ContactUpdate(c *gin.Context){
+	var contact UpdateContactForm
+	var contactmd 	Contact
+	var user    User
+	var str     string
+	id := c.Param("id")
+	token := c.GetHeader("Authorization")
+	email := Config.ClaimJWT(token)
+	Config.DB.Table("users").Where("email = ?",email).Scan(&user)
+	err := c.ShouldBindJSON(&contact)
+	if err != nil {
+		c.JSON(400,gin.H{"error":"Check your input!"})
+	}else {
+		if len(contact.Phone_numbers) != 0 {
+			for _,nums := range contact.Phone_numbers{
+				str += nums + ","
+			}
+			contactmd.Phone_number = str
+		}
+		contactmd.Description = contact.Description
+		contactmd.Name = contact.Name
+		res := Config.DB.Table("contacts").
+			Where("id = ?", id).Where("user_id = ?",user.ID).
+			Updates(&contactmd).Error
+		if res != nil {
+			c.JSON(500,gin.H{
+				"error":"IDK",
+			})
+			return
+		}else {
+			c.JSON(200, gin.H{"status":"Updated"})
+		}
+	}
+}

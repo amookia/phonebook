@@ -21,3 +21,10 @@ type AddContactForm struct{
 	Phone_numbers    []string       `json:"phone_numbers" binding:"required"`
 	Description 	 string         `json:"description"`
 }
+
+type UpdateContactForm struct{
+	ID 			    uint
+	Name 			string			`json:"name"`
+	Phone_numbers 	[]string		`json:"phone_numbers"`
+	Description 	string			`json:"description"`
+}
