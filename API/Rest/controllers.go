@@ -105,14 +105,14 @@ func ContactsAdd(c *gin.Context){
 		contact.Name = ContactForm.Name
 		contact.Phone_number = str
 		contact.Description = ContactForm.Description
-		res := Config.DB.Table("contacts").Create(&contact).Error
+		res := Config.DB.Table("contacts").Create(&contact).Scan(&contact).Error
 		if res != nil {
 			c.JSON(500,gin.H{
 				"error":"IDK",
 			})
 			return
 		}
-		c.JSON(200,gin.H{"status":"Success"})
+		c.JSON(200,gin.H{"status":"Success","id":contact.ID})
 	}
 }
 
