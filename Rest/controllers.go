@@ -23,9 +23,10 @@ func Register(c *gin.Context){
 			return
 		}else {
 			//Generate jwt
+			token := Config.GenrateJWT(user.Email)
 			c.JSON(200,gin.H{
 				"status":"Registered",
-				"token":"salamazizamtokenmoken",
+				"token":token,
 			})
 			return
 		}
@@ -48,10 +49,10 @@ func Login(c *gin.Context){
 			Where("email = ?",user.Email).Scan(&user)
 		compare := Config.HashCompare(password,user.Password)
 		if compare == true {
-			//Generate jwt
+			token := Config.GenrateJWT(user.Email)
 			c.JSON(200,gin.H{
 				"status": "Logged in",
-				"token" : "toazizedelami",
+				"token" : token,
 			})
 		}else {
 			c.JSON(401,gin.H{
