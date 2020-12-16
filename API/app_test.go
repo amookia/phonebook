@@ -45,7 +45,6 @@ func TestAuth(t *testing.T){
 	}
 	fmt.Println(respjson)
 	assert.NotNil(t,token)
-	assert.Equal(t,200,resp.StatusCode)
 }
 
 func TestAddContact(t *testing.T){
@@ -65,11 +64,10 @@ func TestAddContact(t *testing.T){
 	id64 := respinter["id"]
 	id = id64.(float64)
 	assert.NotZero(t,id)
-	assert.Equal(t,200,resp.StatusCode)
 }
 
 func TestUpdateContact(t *testing.T){
-	url := fmt.Sprintf("%s/contact/%.0f",base_url,id)
+	url := fmt.Sprintf("%scontact/%.0f",base_url,id)
 	payload := map[string]interface{}{
 		"name":"Update GOLANG",
 		"phone_numbers":[]string{"09858585858","0969696969696"},
