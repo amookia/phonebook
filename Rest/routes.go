@@ -10,4 +10,12 @@ func RegisterRest(app *gin.Engine){
 		v1.POST("/login",Login)       // Login User
 	}
 
+	contact := app.Group("/api/v1/contact")
+	contact.Use(AuthRequired)
+	{
+		contact.POST("/add", func(c *gin.Context) {
+			c.JSON(200,"OK")
+			return
+		})
+	}
 }

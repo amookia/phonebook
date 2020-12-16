@@ -61,3 +61,22 @@ func Login(c *gin.Context){
 		}
 	}
 }
+
+func AuthRequired(c *gin.Context){
+	token := c.GetHeader("Authorization")
+	if len(token) != 0 {
+		verify := Config.CheckJWT(token)
+		if verify {
+			c.Next()
+		}else {
+			c.AbortWithStatusJSON(401,gin.H{
+				"error":"Invalid Token!",
+			})
+		}
+	}else {
+		c.AbortWithStatusJSON(401,gin.H{
+			"error":"Token Required!",
+		})
+	}
+
+}
