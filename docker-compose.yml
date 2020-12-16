@@ -10,7 +10,7 @@ services:
     expose:
       - 3306
     volumes:
-      - ./MYSQL:/var/lib/mysql
+      - ./DB:/var/lib/mysql
 
   restapi:
     build:
