@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"phonebook/Config"
+	"strings"
 )
 
 
@@ -113,4 +114,28 @@ func ContactsAdd(c *gin.Context){
 		}
 		c.JSON(200,gin.H{"status":"Success"})
 	}
+}
+
+func ContactList(c *gin.Context){
+	var contact []Contact
+	var resp    []AddContactForm
+	token := c.GetHeader("Authorization")
+	email := Config.ClaimJWT(token)
+	Config.DB.Table("contacts").Joins("LEFT JOIN users ON users.id = contacts.user_id").
+		Where("users.email = ?",email).Select("contacts.id,contacts.name,contacts.description,contacts.phone_number").
+		Scan(&contact)
+
+
+	for _,co := range contact {
+		number := co.Phone_number[:len(co.Phone_number) - 1]
+		s := strings.Split(number,",")
+		resp = append(resp, AddContactForm{
+			ID: co.ID,
+			Name: co.Name,
+			Description: co.Description,
+			Phone_numbers: s,
+		})
+	}
+	fmt.Println(resp)
+	c.JSON(200,resp)
 }

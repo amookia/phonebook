@@ -13,6 +13,7 @@ func RegisterRest(app *gin.Engine){
 	contact := app.Group("/api/v1/contact")
 	contact.Use(AuthRequired)
 	{
-		contact.POST("/add",ContactsAdd)
+		contact.POST("/add",ContactsAdd)   //Add Contact
+		contact.GET("/list",ContactList)   //Contact List
 	}
 }

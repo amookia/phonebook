@@ -16,6 +16,7 @@ type Contact struct {
 
 
 type AddContactForm struct{
+	ID 				 uint 			`json:"id"`
 	Name             string	        `json:"name" binding:"required,min=6,max=35"`
 	Phone_numbers    []string       `json:"phone_numbers" binding:"required"`
 	Description 	 string         `json:"description"`
