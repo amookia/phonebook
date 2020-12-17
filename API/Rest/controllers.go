@@ -64,6 +64,7 @@ func Login(c *gin.Context){
 	}
 }
 
+
 func AuthRequired(c *gin.Context){
 	var user User
 	token := c.GetHeader("Authorization")
@@ -88,6 +89,7 @@ func AuthRequired(c *gin.Context){
 	}
 
 }
+
 
 func ContactsAdd(c *gin.Context){
 	var ContactForm AddContactForm
@@ -122,6 +124,7 @@ func ContactsAdd(c *gin.Context){
 	}
 }
 
+
 func ContactList(c *gin.Context){
 	var contact []Contact
 	var resp    []AddContactForm
@@ -145,6 +148,7 @@ func ContactList(c *gin.Context){
 	fmt.Println(resp)
 	c.JSON(200,resp)
 }
+
 
 func ContactUpdate(c *gin.Context){
 	var contact UpdateContactForm
@@ -179,4 +183,22 @@ func ContactUpdate(c *gin.Context){
 			c.JSON(200, gin.H{"status":"Updated"})
 		}
 	}
+}
+
+
+func ContactDelete(c *gin.Context){
+	var contact Contact
+	var user  	User
+	id := c.Param("id")
+	token := c.GetHeader("Authorization")
+	email := Config.ClaimJWT(token)
+	Config.DB.Table("users").Where("email = ?",email).Scan(&user)
+	Config.DB.Table("contacts").
+		Where("user_id = ?",user.ID).Where("id = ?",id).Scan(&contact).
+		Delete(&contact)
+	if contact.ID == 0 {
+		c.JSON(404,gin.H{"error":"Not found!"})
+		return
+	}
+	c.JSON(200,gin.H{"status":"Done!"})
 }

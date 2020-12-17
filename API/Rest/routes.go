@@ -16,5 +16,6 @@ func RegisterRest(app *gin.Engine){
 		contact.POST("/add",ContactsAdd)      //Add Contact
 		contact.GET("/list",ContactList)      //Contact List
 		contact.PATCH("/:id",ContactUpdate)   //Update Contact
+		contact.DELETE("/:id",ContactDelete)  //Delete Contact
 	}
 }
